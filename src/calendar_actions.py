@@ -375,6 +375,11 @@ def update_event(
             attendee.dict(by_alias=True, exclude_unset=True) 
             for attendee in update_data.attendees
         ]
+    
+    # Handle reminders
+    if update_data.reminders is not None:
+        update_body['reminders'] = update_data.reminders.dict(by_alias=True, exclude_unset=True)
+
     # Add other updatable fields from EventUpdateRequest if needed
 
     if not update_body:

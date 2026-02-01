@@ -78,7 +78,9 @@ def create_mcp_server():
     async def create_event(calendar_id: str, summary: str, start_time: str, 
                           end_time: str, description: str = None,
                           location: str = None, 
-                          attendee_emails: List[str] = None) -> str:
+                          attendee_emails: List[str] = None,
+                          reminder_minutes: List[int] = None,
+                          reminder_methods: List[str] = None) -> str:
         """Creates a new event with detailed information.
         
         Args:
@@ -89,6 +91,8 @@ def create_mcp_server():
             description: Optional description for the event.
             location: Optional location for the event.
             attendee_emails: Optional list of attendee email addresses.
+            reminder_minutes: List of minutes before the event for reminders (e.g., [10080, 1440] for 7 days and 1 day).
+            reminder_methods: List of methods for reminders (e.g., ['popup', 'popup']). Must match reminder_minutes length.
         """
         try:
             data = {
@@ -103,6 +107,17 @@ def create_mcp_server():
                 data["location"] = location
             if attendee_emails:
                 data["attendees"] = attendee_emails
+            
+            if reminder_minutes:
+                methods = reminder_methods or ['popup'] * len(reminder_minutes)
+                overrides = [
+                    {"method": m, "minutes": mins} 
+                    for m, mins in zip(methods, reminder_minutes)
+                ]
+                data["reminders"] = {
+                    "useDefault": False,
+                    "overrides": overrides
+                }
             
             response = requests.post(
                 f"{BASE_URL}/calendars/{calendar_id}/events", 
@@ -147,7 +162,9 @@ def create_mcp_server():
     @mcp.tool()
     async def update_event(calendar_id: str, event_id: str, summary: str = None, 
                           start_time: str = None, end_time: str = None,
-                          description: str = None, location: str = None) -> str:
+                          description: str = None, location: str = None,
+                          reminder_minutes: List[int] = None,
+                          reminder_methods: List[str] = None) -> str:
         """Updates an existing event.
         
         Args:
@@ -158,6 +175,8 @@ def create_mcp_server():
             end_time: New end time in ISO 8601 format (e.g., 'YYYY-MM-DDTHH:MM:SSZ' or 'YYYY-MM-DDTHH:MM:SS+HH:MM').
             description: New description for the event.
             location: New location for the event.
+            reminder_minutes: List of minutes before the event for reminders (e.g., [10080, 1440] for 7 days and 1 day).
+            reminder_methods: List of methods for reminders (e.g., ['popup', 'popup']). Must match reminder_minutes length.
         """
         try:
             data = {}
@@ -171,6 +190,17 @@ def create_mcp_server():
                 data["description"] = description
             if location:
                 data["location"] = location
+            
+            if reminder_minutes:
+                methods = reminder_methods or ['popup'] * len(reminder_minutes)
+                overrides = [
+                    {"method": m, "minutes": mins} 
+                    for m, mins in zip(methods, reminder_minutes)
+                ]
+                data["reminders"] = {
+                    "useDefault": False,
+                    "overrides": overrides
+                }
             
             response = requests.patch(
                 f"{BASE_URL}/calendars/{calendar_id}/events/{event_id}", 

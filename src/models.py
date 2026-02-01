@@ -128,6 +128,7 @@ class EventUpdateRequest(BaseModel):
     description: Optional[str] = None
     location: Optional[str] = None
     attendees: Optional[List[EventAttendee]] = None # Allow updating attendee details or list
+    reminders: Optional[EventReminders] = None
     # Add other updatable fields
 
 class AddAttendeeRequest(BaseModel):
