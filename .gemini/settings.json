@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "calendar-mcp": {
+      "command": "/home/xai/DEV/photo-events/.venv/bin/python",
+      "args": [
+        "/home/xai/DEV/photo-events/run_server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "/home/xai/DEV/photo-events"
+      },
+      "trust": true
+    }
+  }
+}
