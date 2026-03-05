@@ -102,5 +102,6 @@ calendar_mcp.log
 openapi_response.json
 task-list.mdc
 TASKS.md
+.codex/
 /.cursor/.gemini/
 GEMINI.md
